@@ -1,0 +1,25 @@
+
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: chibisafe-tailscale
+  annotations:
+    tailscale.com/funnel: 'true'
+  finalizers:
+    - tailscale.com/finalizer
+  namespace: chibisafe
+spec:
+  ingressClassName: tailscale
+  rules:
+    - http:
+        paths:
+          - backend:
+              service:
+                name: chibisafe-router
+                port:
+                  number: 80
+            path: /
+            pathType: Prefix
+  tls:
+    - hosts:
+        - chibisafe

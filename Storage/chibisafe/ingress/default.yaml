@@ -1,0 +1,23 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: chibisafe
+  annotations:
+    traefik.ingress.kubernetes.io/router.entrypoints: websecure
+  namespace: chibisafe
+spec:
+  ingressClassName: traefik
+  rules:
+    - host: files.datlycan.cc
+      http:
+        paths:
+          - backend:
+              service:
+                name: chibisafe-router
+                port:
+                  number: 80
+            path: /
+            pathType: Prefix
+  tls:
+    - hosts:
+        - file.datlycan.cc

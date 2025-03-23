@@ -1,0 +1,67 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: chibisafe
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: chibisafe
+  template:
+    metadata:
+      labels:
+        app: chibisafe
+    spec:
+      containers:
+        # Chibisafe Client Container
+        - name: chibisafe-client
+          image: chibisafe/chibisafe:latest
+          env:
+            - name: BASE_API_URL
+              value: "http://localhost:8000"
+          ports:
+            - containerPort: 8001
+          volumeMounts:
+            - name: chibisafe-data
+              mountPath: /app/uploads
+              subPath: uploads
+
+        # Chibisafe Server Container
+        - name: chibisafe-server
+          image: chibisafe/chibisafe-server:latest
+          volumeMounts:
+            - name: chibisafe-data
+              mountPath: /app/database
+              subPath: database
+            - name: chibisafe-data
+              mountPath: /app/uploads
+              subPath: uploads
+            - name: chibisafe-data
+              mountPath: /app/logs
+              subPath: logs
+          ports:
+            - containerPort: 8000
+
+        # Caddy Container (Sidecar)
+        - name: caddy
+          image: caddy:2-alpine
+          env:
+            - name: BASE_URL
+              value: ":80"
+          volumeMounts:
+            - name: caddyfile
+              mountPath: /etc/caddy/Caddyfile
+              subPath: Caddyfile
+            - name: chibisafe-data
+              mountPath: /app/uploads
+              subPath: uploads
+          ports:
+            - containerPort: 80
+
+      volumes:
+        - name: chibisafe-data
+          persistentVolumeClaim:
+            claimName: pvc-chibisafe
+        - name: caddyfile
+          configMap:
+            name: caddy-config
