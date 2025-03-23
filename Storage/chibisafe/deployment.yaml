@@ -11,40 +11,6 @@
 #       storage: 350Gi
 #   storageClassName: nas-retain
 # ---
-# --- ConfigMap for Caddy Configuration ---
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: caddy-config
-data:
-  Caddyfile: |
-    {$BASE_URL} {
-      route {
-        file_server * {
-          root /app/uploads
-          pass_thru
-        }
-
-        @api path /api/*
-        reverse_proxy @api http://localhost:8000 {
-          header_up Host {http.reverse_proxy.upstream.hostport}
-          header_up X-Real-IP {http.request.header.X-Real-IP}
-        }
-
-        @docs path /docs*
-        reverse_proxy @docs http://localhost:8000 {
-          header_up Host {http.reverse_proxy.upstream.hostport}
-          header_up X-Real-IP {http.request.header.X-Real-IP}
-        }
-
-        reverse_proxy http://localhost:8001 {
-          header_up Host {http.reverse_proxy.upstream.hostport}
-          header_up X-Real-IP {http.request.header.X-Real-IP}
-        }
-      }
-    }
-
----
 # --- Chibisafe Deployment (Chibisafe Client, Chibisafe Server, and Caddy as sidecars) ---
 apiVersion: apps/v1
 kind: Deployment
@@ -156,3 +122,36 @@ spec:
       port: 80
       targetPort: 80
   type: ClusterIP
+---
+# --- ConfigMap for Caddy Configuration ---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: caddy-config
+data:
+  Caddyfile: |
+    {$BASE_URL} {
+      route {
+        file_server * {
+          root /app/uploads
+          pass_thru
+        }
+
+        @api path /api/*
+        reverse_proxy @api http://localhost:8000 {
+          header_up Host {http.reverse_proxy.upstream.hostport}
+          header_up X-Real-IP {http.request.header.X-Real-IP}
+        }
+
+        @docs path /docs*
+        reverse_proxy @docs http://localhost:8000 {
+          header_up Host {http.reverse_proxy.upstream.hostport}
+          header_up X-Real-IP {http.request.header.X-Real-IP}
+        }
+
+        reverse_proxy http://localhost:8001 {
+          header_up Host {http.reverse_proxy.upstream.hostport}
+          header_up X-Real-IP {http.request.header.X-Real-IP}
+        }
+      }
+    }
