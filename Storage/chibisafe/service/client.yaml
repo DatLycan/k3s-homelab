@@ -1,0 +1,12 @@
+# --- Chibisafe Client Service (Headless) ---
+apiVersion: v1
+kind: Service
+metadata:
+  name: chibisafe-client
+spec:
+  clusterIP: None
+  selector:
+    app: chibisafe
+  ports:
+    - port: 8001
+      targetPort: 8001

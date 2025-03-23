@@ -1,0 +1,12 @@
+# --- Persistent Volume Claim ---
+# apiVersion: v1
+# kind: PersistentVolumeClaim
+# metadata:
+#   name: pvc-chibisafe
+# spec:
+#   accessModes:
+#     - ReadWriteMany
+#   resources:
+#     requests:
+#       storage: 350Gi
+#   storageClassName: nas-retain
