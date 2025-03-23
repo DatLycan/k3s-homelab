@@ -2,6 +2,11 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: chibisafe
+  namespace: chibisafe
+  labels:
+    app: chibisafe
+    app.kubernetes.io/instance: chibisafe
+    app.kubernetes.io/name: chibisafe
 spec:
   replicas: 1
   selector:
@@ -11,6 +16,8 @@ spec:
     metadata:
       labels:
         app: chibisafe
+        app.kubernetes.io/instance: chibisafe
+        app.kubernetes.io/instance: chibisafe
     spec:
       containers:
         # Chibisafe Client Container
