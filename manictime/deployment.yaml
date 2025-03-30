@@ -20,6 +20,32 @@ spec:
         app.kubernetes.io/instance: manictime
         app.kubernetes.io/name: manictime
     spec:
+      initContainers:
+        - name: init-add-admin
+          image: manictime/manictimeserver:2023.1.1
+          command: ["/bin/sh", "-c"]
+          args:
+            - |
+              if ! sqlite3 /app/Data/ManicTimeServer.sqlite "SELECT * FROM Users WHERE Email='$(ADMIN_EMAIL)';" | grep -q $(ADMIN_EMAIL); then
+                echo "Admin user not found. Creating..."
+                dotnet /app/ManicTimeServer.dll addadmin -u $(ADMIN_EMAIL) -p $(ADMIN_PASSWORD)
+              else
+                echo "Admin user already exists. Skipping creation."
+              fi
+          env:
+            - name: ADMIN_EMAIL
+              valueFrom:
+                secretKeyRef:
+                  name: manictime-admin-secret
+                  key: ADMIN_EMAIL
+            - name: ADMIN_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: manictime-admin-secret
+                  key: ADMIN_PASSWORD
+          volumeMounts:
+            - name: manictime-data
+              mountPath: /app/Data
       containers:
         - name: manictime-server
           image: manictime/manictimeserver:2023.1.1
