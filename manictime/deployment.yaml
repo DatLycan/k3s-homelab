@@ -5,7 +5,7 @@ metadata:
   name: manictime
   namespace: manictime
   labels:
-    app: chibisafe
+    app: manictime
     app.kubernetes.io/instance: manictime
     app.kubernetes.io/name: manictime
 spec:
