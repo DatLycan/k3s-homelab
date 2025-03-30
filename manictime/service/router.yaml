@@ -1,0 +1,13 @@
+# --- Manictime Router Service ---
+apiVersion: v1
+kind: Service
+metadata:
+  name: manictime-router
+  namespace: manictime
+spec:
+  selector:
+    app: manictime
+  ports:
+    - port: 80
+      targetPort: 8080
+  type: ClusterIP

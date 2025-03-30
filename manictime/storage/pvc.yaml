@@ -1,0 +1,13 @@
+# --- Persistent Volume Claim ---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: pvc-manictime
+  namespace: manictime
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 15Gi
+  storageClassName: nas-retain

@@ -1,0 +1,35 @@
+# --- Manictime Deployment ---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: manictime
+  namespace: manictime
+  labels:
+    app: manictime
+    app.kubernetes.io/instance: manictime
+    app.kubernetes.io/name: manictime
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: manictime
+  template:
+    metadata:
+      labels:
+        app: manictime
+        app.kubernetes.io/instance: manictime
+        app.kubernetes.io/name: manictime
+    spec:
+      containers:
+        - name: manictime-server
+          image: manictime/manictimeserver
+          ports:
+            - containerPort: 8080
+          volumeMounts:
+            - name: manictime-data
+              mountPath: /app/Data
+
+      volumes:
+        - name: manictime-data
+          persistentVolumeClaim:
+            claimName: pvc-manictime
