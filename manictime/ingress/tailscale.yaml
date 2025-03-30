@@ -1,0 +1,22 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: manictime-tailscale
+  finalizers:
+    - tailscale.com/finalizer
+  namespace: manictime
+spec:
+  ingressClassName: tailscale
+  rules:
+    - http:
+        paths:
+          - backend:
+              service:
+                name: manictime-router
+                port:
+                  number: 80
+            path: /
+            pathType: Prefix
+  tls:
+    - hosts:
+        - manictime
